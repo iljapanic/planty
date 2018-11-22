@@ -10,7 +10,7 @@ void setup() {
 
 void loop() {
   int sensorValue = capSensor.capacitiveSensor(30);
-  int remappedValue = map(sensorValue, -2, 62000, 0, 1000);
+  int remappedValue = map(sensorValue, -2, 100000, 0, 1024);
 
   
   Serial.println("");

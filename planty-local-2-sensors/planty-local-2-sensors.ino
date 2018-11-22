@@ -8,7 +8,8 @@
 const char* ssid = "Sensors Network";
 const char* password = "sensors4ever";
 const char* mqtt_server = "192.168.2.227";
-const char* room = "mdef/hello";
+const char* room1 = "mdef/wetmyleaf/moisture";
+const char* room2 = "mdef/wetmyleaf/touch";
 
 CapacitiveSensor capSensor = CapacitiveSensor(2, 4);
 
@@ -38,18 +39,31 @@ void loop() {
   if (now - lastMsg > 2000) {
     lastMsg = now;
     int rawMoisture = analogRead(A0);
-    long rawCapacity = capSensor.capacitiveSensor(30);
+    int mapMoisture = map(rawMoisture, 0, 1024, 0,255);
+    int rawCapacity = capSensor.capacitiveSensor(30);
+    int mapCapacity = map(rawCapacity, -2, 30000, 0, 255);
 
     
-    snprintf (msg, 50, "plant moisture: #%ld", rawMoisture);
-    snprintf (msg2, 50, "plant capacity: #%ld", rawCapacity);
-    Serial.print("Publish message: ");
-    Serial.println(msg);
-    Serial.print("Publish message 2: ");
-    Serial.println(msg);
-    client.publish(room, msg);
-    client.publish(room, msg2);
+    snprintf (msg, 50, "%ld", mapMoisture);
+    snprintf (msg2, 50, "%ld", mapCapacity);
+    
+    Serial.println("");
+    Serial.print("Moisture: Raw=");
+    Serial.print(rawMoisture);
+    Serial.print(" Map=");
+    Serial.print(mapMoisture);
+
+    Serial.println("");
+    Serial.print("Touch: Raw=");
+    Serial.print(rawCapacity);
+    Serial.print(" Map=");
+    Serial.print(mapCapacity);
+    
+    client.publish(room1, msg);
+    client.publish(room2, msg2);
   }
+
+  delay(200);
 }
 
 // wifi setup
